@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import Paragraph from './components/Paragraph'
-import Image from './components/Image'
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Detalhes from './routes/Detalhes';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCounter } from './redux/actions';
 
 function App() {
   const [imageList, setImageList] = useState([])
@@ -36,18 +37,29 @@ function App() {
 }
 
 function ImageList(props) {
+  const count = useSelector((state) => {
+    return state.count.count
+  });
+
+  const dispatch = useDispatch();
+
+  const changeExample = () => {
+    dispatch(setCounter(count + 1));
+  };
+  
     return (
-      <div style={{display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'column'}}>
-        {props.imageList.map((image) => {
+      <div style={{display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'column', paddingTop: '30px'}}>
+        <button onClick={changeExample}>Change Example</button>
+        <Paragraph tamanho='30px'>Info: {count}</Paragraph>
+        {/* {props.imageList.map((image) => {
         return (
           <div key={image.id}>
-            <Paragraph tamanho='30px'>Name: {image.author}</Paragraph>
             <Link to={`/detalhes/${image.id}`}>
               <Image width='300px' height='300px' url={image.download_url} />
             </Link>
           </div>
         );
-        })}
+        })} */}
       </div>
     );
 }
