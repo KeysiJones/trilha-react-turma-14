@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
-import Paragraph from './components/Paragraph'
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Detalhes from './routes/Detalhes';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCounter } from './redux/actions';
+import reactLogo from './assets/react.svg'
+import { Title } from './components/Title';
+import { Image } from './components/Image';
+import { Paragrafo } from './components/Paragrafo';
 
 function App() {
   const [imageList, setImageList] = useState([])
@@ -50,7 +53,10 @@ function ImageList(props) {
     return (
       <div style={{display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'column', paddingTop: '30px'}}>
         <button onClick={changeExample}>Change Example</button>
-        <Paragraph tamanho='30px'>Info: {count}</Paragraph>
+        <Paragrafo color='green' fontSize='40px' fontWeight='500'>Info: {count}</Paragrafo>
+        <Title color='green' size='40px'>Titulo</Title>
+        <Image src={reactLogo}></Image>
+
         {/* {props.imageList.map((image) => {
         return (
           <div key={image.id}>
