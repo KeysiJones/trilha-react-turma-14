@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Detalhes from './routes/Detalhes';
@@ -10,21 +10,6 @@ import { Image } from './components/Image';
 import { Paragrafo } from './components/Paragrafo';
 
 function App() {
-  const [imageList, setImageList] = useState([])
-
-  function getData() {
-    axios
-      .get('https://picsum.photos/v2/list?limit=10')
-      .then((response) => {
-        console.log(response.data);
-        setImageList(response.data);
-      })
-  }
-
-  useEffect(getData, [])
-
-  if (!imageList) return <p>Carregando...</p>
-
   return (
     <Router>
       <Routes>
@@ -32,10 +17,70 @@ function App() {
           path='/detalhes/:id'
           element={<Detalhes />}
         />
-        <Route path='/users' element={<div>Página de usuários</div>}></Route>
-        <Route path='/' element={<ImageList imageList={imageList} />}></Route>
+        <Route path='/repos' element={<List />}></Route>
       </Routes>
     </Router>
+  );
+}
+
+const List = () => {
+  const [repoList, setRepoList] = useState([])
+  const [query, setQuery] = useState('')
+
+  function handleSearch () {
+    console.log({repoList})
+
+    const type = 'repositories'
+    const url = `https://api.github.com/search/${type}?q=${query}`;
+
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response.data.items);
+        setRepoList(response.data.items)
+      })
+  }
+
+  return (
+    <>
+      <div>
+        <form
+          onSubmit={handleSearch}
+          style={{ columnGap: '15px', display: 'flex' }}
+        >
+          <input
+            type='text'
+            value={query}
+            className='input'
+            placeholder={`Pesquise um repositório do github`}
+            onChange={(e) => {
+              setQuery(e.target.value);
+
+              if (e.target.value.length > 4) {
+                handleSearch()
+              }
+            }}
+          />
+          <button type='submit'>Pesquisar</button>
+        </form>
+      </div>
+      <div>
+        {repoList.map((repo, index) => (
+          <div
+            key={index}
+            style={{
+              backgroundColor: 'green',
+              margin: '20px',
+              padding: '20px',
+              borderRadius: '10px',
+            }}
+          >
+            <div>Nome do repositório: {repo.full_name}</div>
+            <div>Descrição: {repo.description}</div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
